@@ -16,11 +16,12 @@ drawing = False  # true if mouse is pressed
 mode = Mode.LINE  # if True, draw normal line. Press 'm' to arrowed line
 ix, iy = -1, -1
 thickness = 5
+font_size = 1
 
 
 # mouse callback function
 def draw_circle(event, x, y, flags, param):
-    global ix, iy, drawing, mode, imgcopy, img
+    global ix, iy, drawing, mode, imgcopy, img, font_size
 
     if event == cv2.EVENT_LBUTTONDOWN:
         drawing = True
@@ -36,6 +37,11 @@ def draw_circle(event, x, y, flags, param):
                 cv2.arrowedLine(img, (ix, iy), (x, y), (0, 0, 255), thickness)
             elif mode == Mode.RECTANGLE:
                 cv2.rectangle(img, (ix, iy), (x, y), (0, 0, 255), thickness)
+            elif mode == Mode.CIRCLE:
+                a = np.array((ix, iy))
+                b = np.array((x, y))
+                dist = np.linalg.norm(a - b)
+                cv2.circle(img, (ix, iy), int(dist), (0, 255, 0), thickness)
 
     elif event == cv2.EVENT_LBUTTONUP:
         drawing = False
@@ -45,6 +51,30 @@ def draw_circle(event, x, y, flags, param):
             cv2.arrowedLine(img, (ix, iy), (x, y), (0, 0, 255), thickness)
         elif mode == Mode.RECTANGLE:
             cv2.rectangle(img, (ix, iy), (x, y), (0, 0, 255), thickness)
+        elif mode == Mode.CIRCLE:
+            a = np.array((ix, iy))
+            b = np.array((x, y))
+            dist = np.linalg.norm(a - b)
+            cv2.circle(img, (ix, iy), int(dist), (0, 0, 255), thickness)
+
+    elif event == cv2.EVENT_RBUTTONDOWN:
+        s = ""
+        imgcopy = img.copy()
+        while(1):
+            k = cv2.waitKey(0) & 0xFF
+            if k != 27:
+                s += chr(k)
+            print(s)
+            if k == 9:
+                text = cv2.getTextSize(s[:-1], cv2.FONT_HERSHEY_SIMPLEX,
+                                       font_size, 1)[0]
+                ix, iy = text
+                cv2.rectangle(img, (x, y), (x + ix, y - iy),
+                              (255, 255, 255), -1)
+                cv2.putText(img, s[:-1], (x, y),
+                            cv2.FONT_HERSHEY_SIMPLEX, font_size,
+                            255, 1)  
+                break
 
 
 cv2.namedWindow('image')
@@ -62,5 +92,9 @@ while(1):
         thickness += 1
     elif k == ord('1'):
             thickness -= 1
+    elif k == ord('4'):
+        font_size += 0.1
+    elif k == ord('3'):
+        font_size -= 0.1
     elif k == 27:
         break

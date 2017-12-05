@@ -17,7 +17,7 @@ mode = Mode.LINE  # if True, draw normal line. Press 'm' to arrowed line
 ix, iy = -1, -1
 thickness = 5
 font_size = 1
-imgList = [img]
+imgList = [img.copy()]
 
 
 # mouse callback function
@@ -57,7 +57,7 @@ def draw_circle(event, x, y, flags, param):
             b = np.array((x, y))
             dist = np.linalg.norm(a - b)
             cv2.circle(img, (ix, iy), int(dist), (0, 0, 255), thickness)
-        imgList.append(img)
+        imgList.append(img.copy())
 
     elif event == cv2.EVENT_RBUTTONDOWN:
         s = ""
@@ -77,7 +77,7 @@ def draw_circle(event, x, y, flags, param):
                             cv2.FONT_HERSHEY_SIMPLEX, font_size,
                             255, 1)
                 break
-        imgList.append(img)
+        imgList.append(img.copy())
 
 
 cv2.namedWindow('image')

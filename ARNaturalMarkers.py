@@ -1,12 +1,19 @@
 import cv2
 import numpy as np
-print("OpenCV Version : %s " % cv2.__version__)
+from enum import Enum
+
+
+class Mode(Enum):
+    LINE = 1
+    ARROW = 2
+    RECTANGLE = 3
+    CIRCLE = 4
 
 
 img = cv2.imread("images/estadio.jpg")
 
 drawing = False  # true if mouse is pressed
-mode = True  # if True, draw normal line. Press 'm' to arrowed line
+mode = Mode.LINE  # if True, draw normal line. Press 'm' to arrowed line
 ix, iy = -1, -1
 thickness = 5
 
@@ -23,17 +30,21 @@ def draw_circle(event, x, y, flags, param):
     elif event == cv2.EVENT_MOUSEMOVE:
         if drawing is True:
             img = imgcopy.copy()
-            if mode is True:
+            if mode == Mode.LINE:
                 cv2.line(img, (ix, iy), (x, y), (0, 0, 255), thickness)
-            else:
+            elif mode == Mode.ARROW:
                 cv2.arrowedLine(img, (ix, iy), (x, y), (0, 0, 255), thickness)
+            elif mode == Mode.RECTANGLE:
+                cv2.rectangle(img, (ix, iy), (x, y), (0, 0, 255), thickness)
 
     elif event == cv2.EVENT_LBUTTONUP:
         drawing = False
-        if mode is True:
+        if mode == Mode.LINE:
             cv2.line(img, (ix, iy), (x, y), (0, 0, 255), thickness)
-        else:
+        elif mode == Mode.ARROW:
             cv2.arrowedLine(img, (ix, iy), (x, y), (0, 0, 255), thickness)
+        elif mode == Mode.RECTANGLE:
+            cv2.rectangle(img, (ix, iy), (x, y), (0, 0, 255), thickness)
 
 
 cv2.namedWindow('image')
@@ -43,7 +54,10 @@ while(1):
     cv2.imshow('image', img)
     k = cv2.waitKey(1) & 0xFF
     if k == ord('m'):
-        mode = not mode
+        if mode.value < len(Mode):
+            mode = Mode(mode.value + 1)
+        else:
+            mode = Mode(1)
     elif k == ord('2'):
         thickness += 1
     elif k == ord('1'):

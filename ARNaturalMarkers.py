@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from enum import Enum
+from tkinter.filedialog import askopenfilename
 
 
 class Mode(Enum):
@@ -10,7 +11,8 @@ class Mode(Enum):
     CIRCLE = 4
 
 
-img = cv2.imread("images/estadio.jpg")
+filename = askopenfilename()
+img = cv2.imread(filename)
 
 drawing = False  # true if mouse is pressed
 mode = Mode.LINE  # if True, draw normal line. Press 'm' to arrowed line
@@ -101,6 +103,6 @@ while(1):
         font_size -= 0.1
     elif k == 8:
         imgList.pop()
-        img = imgList[len(imgList)-1]
+        img = imgList[len(imgList) - 1]
     elif k == 27:
         break

@@ -1,56 +1,11 @@
 import cv2
 import numpy as np
-from enum import Enum
 from tkinter.filedialog import askopenfilenames
 from tkinter import Tk
 import pickle
 import os
+from Classes import Mode, RectangularObj, CircleObj, TextObj, Subset, Image
 
-
-class Mode(Enum):
-    LINE = 1
-    ARROW = 2
-    RECTANGLE = 3
-    CIRCLE = 4
-
-
-class RectangularObj():
-    def __init__(self, init, final, color, thickness):
-        self.init = init
-        self.final = final
-        self.color = color
-        self.thickness = thickness
-
-
-class CircleObj():
-    def __init__(self, init, dist, color, thickness):
-        self.init = init
-        self.dist = dist
-        self.color = color
-        self.thickness = thickness
-
-
-class TextObj():
-    def __init__(self, rect, text, font_size, color, thickness):
-        self.rect = rect
-        self.text = text
-        self.font_size = font_size
-        self.color = color
-        self.thickness = thickness
-
-
-class Subset():
-
-    def __init__(self, mode, obj):
-        self.mode = mode
-        self.obj = obj
-
-
-class Image():
-
-    def __init__(self, filename, subsets):
-        self.filename = filename
-        self.subsets = subsets
 
 # mouse callback function
 def draw_circle(event, x, y, flags, param):
@@ -188,7 +143,10 @@ for filename in filenames:
             cv2.destroyAllWindows()
         elif k == 27:
             cv2.destroyAllWindows()
-            images.append(Image(os.path.basename(filename), subsets))
+            newfilename = os.path.splitext(os.path.basename(filename))[0] + ".png"
+            cv2.imwrite(os.path.join('prepared', newfilename), img)
+            images.append(Image(newfilename, subsets))
+            os.path.basename(filename + "_p")
             break
 
 pickle.dump(images, open("imagesdb.obj", "wb"))

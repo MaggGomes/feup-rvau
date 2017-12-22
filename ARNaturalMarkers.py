@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 from enum import Enum
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilenames
+from tkinter import Tk
 
 
 class Mode(Enum):
@@ -9,17 +10,6 @@ class Mode(Enum):
     ARROW = 2
     RECTANGLE = 3
     CIRCLE = 4
-
-
-filename = askopenfilename()
-img = cv2.imread(filename)
-
-drawing = False  # true if mouse is pressed
-mode = Mode.LINE  # if True, draw normal line. Press 'm' to arrowed line
-ix, iy = -1, -1
-thickness = 5
-font_size = 1
-imgList = [img.copy()]
 
 
 # mouse callback function
@@ -82,27 +72,43 @@ def draw_circle(event, x, y, flags, param):
         imgList.append(img.copy())
 
 
-cv2.namedWindow('image')
-cv2.setMouseCallback('image', draw_circle)
+window = Tk()
+files = askopenfilenames()
+filenames = window.tk.splitlist(files)
 
-while(1):
-    cv2.imshow('image', img)
-    k = cv2.waitKey(1) & 0xFF
-    if k == ord('m'):
-        if mode.value < len(Mode):
-            mode = Mode(mode.value + 1)
-        else:
-            mode = Mode(1)
-    elif k == ord('2'):
-        thickness += 1
-    elif k == ord('1'):
-            thickness -= 1
-    elif k == ord('4'):
-        font_size += 0.1
-    elif k == ord('3'):
-        font_size -= 0.1
-    elif k == 8:
-        imgList.pop()
-        img = imgList[len(imgList) - 1]
-    elif k == 27:
-        break
+for filename in filenames:
+    img = cv2.imread(filename)
+
+    drawing = False  # true if mouse is pressed
+    mode = Mode.LINE  # if True, draw normal line. Press 'm' to arrowed line
+    ix, iy = -1, -1
+    thickness = 5
+    font_size = 1
+    imgList = [img.copy()]
+
+    cv2.namedWindow('image')
+    cv2.setMouseCallback('image', draw_circle)
+
+    while(1):
+        cv2.imshow('image', img)
+        k = cv2.waitKey(1) & 0xFF
+        if k == ord('m'):
+            if mode.value < len(Mode):
+                mode = Mode(mode.value + 1)
+            else:
+                mode = Mode(1)
+        elif k == ord('2'):
+            thickness += 1
+        elif k == ord('1'):
+                thickness -= 1
+        elif k == ord('4'):
+            font_size += 0.1
+        elif k == ord('3'):
+            font_size -= 0.1
+        elif k == 8:
+            if(len(imgList) > 1):
+                imgList.pop()
+                img = imgList[len(imgList) - 1]
+        elif k == 27:
+            cv2.destroyAllWindows()
+            break

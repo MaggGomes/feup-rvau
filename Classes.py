@@ -35,9 +35,10 @@ class TextObj:
 
 class Subset:
 
-    def __init__(self, mode, obj):
+    def __init__(self, mode, obj,img):
         self.mode = mode
         self.obj = obj
+        self.img = img
 
 
 class Image:

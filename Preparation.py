@@ -7,6 +7,17 @@ import os
 from Classes import Mode, RectangularObj, CircleObj, TextObj, Subset, Image
 
 
+def crop_image(img, x1, y1, x2, y2):
+    if x1 < x2 and y1 < y2:
+        return img[y1:y2, x1:x2].copy()
+    elif x1 < x2 and y1 > y2:
+        return img[y2:y1, x1:x2].copy()
+    elif x1 > x2 and y1 < y2:
+        return img[y1:y2, x2:x1].copy()
+    elif x1 > x2 and y1 > y2:
+        return img[y2:y1, x2:x2].copy()
+
+
 # mouse callback function
 def draw_circle(event, x, y, flags, param):
     global ix, iy, drawing, mode, imgcopy, img, font_size, imgList, subsets
@@ -39,21 +50,26 @@ def draw_circle(event, x, y, flags, param):
                            RectangularObj((ix, iy),
                                           (x, y),
                                           (0, 0, 255),
-                                          thickness)))
+                                          thickness),
+                           crop_image(img, ix, iy, x, y)))
+
         elif mode == Mode.ARROW:
             cv2.arrowedLine(img, (ix, iy), (x, y), (0, 0, 255), thickness)
+
             subsets.append(Subset(mode,
                            RectangularObj((ix, iy),
                                           (x, y),
                                           (0, 0, 255),
-                                          thickness)))
+                                          thickness),
+                           crop_image(img, ix, iy, x, y)))
         elif mode == Mode.RECTANGLE:
             cv2.rectangle(img, (ix, iy), (x, y), (0, 0, 255), thickness)
             subsets.append(Subset(mode,
                            RectangularObj((ix, iy),
                                           (x, y),
                                           (0, 0, 255),
-                                          thickness)))
+                                          thickness),
+                           crop_image(img, ix, iy, x, y)))
         elif mode == Mode.CIRCLE:
             a = np.array((ix, iy))
             b = np.array((x, y))
@@ -63,7 +79,9 @@ def draw_circle(event, x, y, flags, param):
                            CircleObj((ix, iy),
                                      int(dist),
                                      (0, 0, 255),
-                                     thickness)))
+                                     thickness),
+                           crop_image(img, ix - int(dist), iy - int(dist),
+                                      ix + int(dist), iy + int(dist))))
         imgList.append(img.copy())
 
     elif event == cv2.EVENT_RBUTTONDOWN:
@@ -89,7 +107,9 @@ def draw_circle(event, x, y, flags, param):
                                                       (x + ix, y - iy),
                                                       (255, 255, 255),
                                                       -1),
-                                       s[:-1], font_size, 255, 1)))
+                                       s[:-1], font_size, 255, 1),
+                               crop_image(img, x, y, x + ix, y - iy)))
+                cv2.imwrite("ssds.png", crop_image(img, x, y, x + ix, y - iy))
                 break
         imgList.append(img.copy())
 
@@ -139,6 +159,7 @@ for filename in filenames:
             if(len(imgList) > 1):
                 imgList.pop()
                 img = imgList[len(imgList) - 1]
+                subsets.pop()
         elif k == ord('s'):
             cv2.destroyAllWindows()
         elif k == 27:

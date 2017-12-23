@@ -2,10 +2,9 @@ from enum import Enum
 
 
 class Mode(Enum):
-    LINE = 1
-    ARROW = 2
-    RECTANGLE = 3
-    CIRCLE = 4
+    ARROW = 1
+    RECTANGLE = 2
+    CIRCLE = 3
 
 
 class RectangularObj:

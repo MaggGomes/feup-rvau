@@ -30,11 +30,7 @@ def draw_circle(event, x, y, flags, param):
     elif event == cv2.EVENT_MOUSEMOVE:
         if drawing is True:
             img = imgcopy.copy()
-            if mode == Mode.LINE:
-                cv2.line(img, (ix, iy), (x, y), (0, 0, 255), thickness)
-            elif mode == Mode.ARROW:
-                cv2.arrowedLine(img, (ix, iy), (x, y), (0, 0, 255), thickness)
-            elif mode == Mode.RECTANGLE:
+            if mode == Mode.RECTANGLE:
                 cv2.rectangle(img, (ix, iy), (x, y), (0, 0, 255), thickness)
             elif mode == Mode.CIRCLE:
                 a = np.array((ix, iy))
@@ -42,27 +38,20 @@ def draw_circle(event, x, y, flags, param):
                 dist = np.linalg.norm(a - b)
                 cv2.circle(img, (ix, iy), int(dist), (0, 255, 0), thickness)
 
+    elif event == cv2.EVENT_LBUTTONDBLCLK:
+        if mode == Mode.ARROW:
+            cv2.arrowedLine(img, (x, y - 50), (x, y), (0, 0, 255), thickness)
+            subsets.append(Subset(Mode.ARROW,
+                           RectangularObj((x, y - 50),
+                                          (x, y),
+                                          (0, 0, 255),
+                                          thickness),
+                           crop_image(img, x - 50, y - 50, x + 50, y)))
+            cv2.imwrite("teste.png", crop_image(img, x - 50, y - 50, x + 50, y))
+
     elif event == cv2.EVENT_LBUTTONUP:
         drawing = False
-        if mode == Mode.LINE:
-            cv2.line(img, (ix, iy), (x, y), (0, 0, 255), thickness)
-            subsets.append(Subset(mode,
-                           RectangularObj((ix, iy),
-                                          (x, y),
-                                          (0, 0, 255),
-                                          thickness),
-                           crop_image(img, ix, iy, x, y)))
-
-        elif mode == Mode.ARROW:
-            cv2.arrowedLine(img, (ix, iy), (x, y), (0, 0, 255), thickness)
-
-            subsets.append(Subset(mode,
-                           RectangularObj((ix, iy),
-                                          (x, y),
-                                          (0, 0, 255),
-                                          thickness),
-                           crop_image(img, ix, iy, x, y)))
-        elif mode == Mode.RECTANGLE:
+        if mode == Mode.RECTANGLE:
             cv2.rectangle(img, (ix, iy), (x, y), (0, 0, 255), thickness)
             subsets.append(Subset(mode,
                            RectangularObj((ix, iy),
@@ -109,7 +98,6 @@ def draw_circle(event, x, y, flags, param):
                                                       -1),
                                        s[:-1], font_size, 255, 1),
                                crop_image(img, x, y, x + ix, y - iy)))
-                cv2.imwrite("ssds.png", crop_image(img, x, y, x + ix, y - iy))
                 break
         imgList.append(img.copy())
 
@@ -129,7 +117,7 @@ for filename in filenames:
     img = cv2.imread(filename)
 
     drawing = False  # true if mouse is pressed
-    mode = Mode.LINE  # if True, draw normal line. Press 'm' to arrowed line
+    mode = Mode.ARROW
     ix, iy = -1, -1
     thickness = 5
     font_size = 1

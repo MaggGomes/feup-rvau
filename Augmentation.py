@@ -70,7 +70,8 @@ for image in images:
 for image in images:
     for subset in image.subsets:
         h, w, _ = subset.img.shape
-        pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
+        pts = np.float32([[0, 0], [0, h - 1],
+                         [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
         subset.subcorners = pts
 
 for image in images:
@@ -81,26 +82,27 @@ for image in images:
 # Display
 for image in images:
     for subset in image.subsets:
-        if subset.mode == Mode.LINE:
+        if subset.mode == Mode.ARROW:
             print(subset.imgcorners)
-            print(subset.imgcorners[0,0][0])
-            ix = subset.imgcorners[0,0][0]
-            
-            iy = int(subset.imgcorners[0,0][1])
-            x = int(subset.imgcorners[2,0][0])
-            y = int(subset.imgcorners[2,0][1])
+            print(subset.imgcorners[0, 0][0])
+            ix = int(subset.imgcorners[0, 0][0])
+            iy = int(subset.imgcorners[0, 0][1])
+            w = int(subset.imgcorners[2, 0][0]) - ix
+            h = int(subset.imgcorners[2, 0][1]) - iy
 
-            cv2.line(img, (ix, iy), (x, y), (0, 0, 255), subset.obj.thickness)
+            cv2.arrowedLine(img, (ix + int(w / 2), iy),
+                                 (ix + int(w / 2), iy + int(h / 2) + 25),
+                                 (0, 0, 255), subset.obj.thickness)
         elif subset.mode == Mode.RECTANGLE:
             print(subset.imgcorners)
-            print(subset.imgcorners[0,0][0])
-            ix = subset.imgcorners[0,0][0]
-            
-            iy = int(subset.imgcorners[0,0][1])
-            x = int(subset.imgcorners[2,0][0])
-            y = int(subset.imgcorners[2,0][1])
+            print(subset.imgcorners[0, 0][0])
+            ix = subset.imgcorners[0, 0][0]
+            iy = int(subset.imgcorners[0, 0][1])
+            x = int(subset.imgcorners[2, 0][0])
+            y = int(subset.imgcorners[2, 0][1])
 
-            cv2.rectangle(img, (ix, iy), (x, y), (0, 0, 255), subset.obj.thickness)
+            cv2.rectangle(img, (ix, iy), (x, y),
+                               (0, 0, 255), subset.obj.thickness)
 
 
 cv2.namedWindow('image')

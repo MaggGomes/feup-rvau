@@ -46,8 +46,7 @@ def draw_circle(event, x, y, flags, param):
                                           (x, y),
                                           (0, 0, 255),
                                           thickness),
-                           crop_image(img, x - 50, y - 50, x + 50, y)))
-            cv2.imwrite("teste.png", crop_image(img, x - 50, y - 50, x + 50, y))
+                           crop_image(imgList[0], x - 50, y - 50, x + 50, y)))
 
     elif event == cv2.EVENT_LBUTTONUP:
         drawing = False
@@ -58,7 +57,7 @@ def draw_circle(event, x, y, flags, param):
                                           (x, y),
                                           (0, 0, 255),
                                           thickness),
-                           crop_image(img, ix, iy, x, y)))
+                           crop_image(imgList[0], ix, iy, x, y)))
         elif mode == Mode.CIRCLE:
             a = np.array((ix, iy))
             b = np.array((x, y))
@@ -69,7 +68,7 @@ def draw_circle(event, x, y, flags, param):
                                      int(dist),
                                      (0, 0, 255),
                                      thickness),
-                           crop_image(img, ix - int(dist), iy - int(dist),
+                           crop_image(imgList[0], ix - int(dist), iy - int(dist),
                                       ix + int(dist), iy + int(dist))))
         imgList.append(img.copy())
 
@@ -97,7 +96,7 @@ def draw_circle(event, x, y, flags, param):
                                                       (255, 255, 255),
                                                       -1),
                                        s[:-1], font_size, 255, 1),
-                               crop_image(img, x, y, x + ix, y - iy)))
+                               crop_image(imgList[0], x, y, x + ix, y - iy)))
                 break
         imgList.append(img.copy())
 
@@ -154,7 +153,7 @@ for filename in filenames:
             cv2.destroyAllWindows()
             newfilename = os.path.splitext(os.path.basename(filename))[0] + ".png"
             cv2.imwrite(os.path.join('prepared', newfilename), img)
-            images.append(Image(img, newfilename, subsets))
+            images.append(Image(img[0], newfilename, subsets))
             break
 
 pickle.dump(images, open("imagesdb.obj", "wb"))

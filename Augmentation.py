@@ -96,13 +96,23 @@ for image in images:
         elif subset.mode == Mode.RECTANGLE:
             print(subset.imgcorners)
             print(subset.imgcorners[0, 0][0])
-            ix = subset.imgcorners[0, 0][0]
+            ix = int(subset.imgcorners[0, 0][0])
             iy = int(subset.imgcorners[0, 0][1])
             x = int(subset.imgcorners[2, 0][0])
             y = int(subset.imgcorners[2, 0][1])
 
             cv2.rectangle(img, (ix, iy), (x, y),
                                (0, 0, 255), subset.obj.thickness)
+
+        elif subset.mode == Mode.CIRCLE:
+            print(subset.imgcorners)
+            print(subset.imgcorners[0, 0][0])
+            ix = int(subset.imgcorners[0, 0][0])
+            iy = int(subset.imgcorners[0, 0][1])
+            w = int(subset.imgcorners[2, 0][0]) - ix
+
+            cv2.circle(img, (ix + int(w / 2), iy + int(w / 2)), int(w / 2),
+                            (0, 0, 255), subset.obj.thickness)
 
 
 cv2.namedWindow('image')

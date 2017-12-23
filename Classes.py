@@ -35,14 +35,17 @@ class TextObj:
 
 class Subset:
 
-    def __init__(self, mode, obj,img):
+    def __init__(self, mode, obj, img):
         self.mode = mode
         self.obj = obj
         self.img = img
 
 
+
+
 class Image:
 
-    def __init__(self, filename, subsets):
+    def __init__(self, img, filename, subsets):
+        self.img = img
         self.filename = filename
         self.subsets = subsets

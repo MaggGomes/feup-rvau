@@ -166,8 +166,7 @@ for filename in filenames:
             cv2.destroyAllWindows()
             newfilename = os.path.splitext(os.path.basename(filename))[0] + ".png"
             cv2.imwrite(os.path.join('prepared', newfilename), img)
-            images.append(Image(newfilename, subsets))
-            os.path.basename(filename + "_p")
+            images.append(Image(img, newfilename, subsets))
             break
 
 pickle.dump(images, open("imagesdb.obj", "wb"))

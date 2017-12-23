@@ -104,6 +104,21 @@ for image in images:
             cv2.rectangle(img, (ix, iy), (x, y),
                                (0, 0, 255), subset.obj.thickness)
 
+        elif subset.mode == Mode.TEXT:
+            print(subset.imgcorners)
+            print(subset.imgcorners[0, 0][0])
+            x = int(subset.imgcorners[1, 0][0]) + 20
+            y = int(subset.imgcorners[1, 0][1]) - 20
+            text = cv2.getTextSize(subset.obj.text, cv2.FONT_HERSHEY_SIMPLEX,
+                                   subset.obj.font_size, 1)[0]
+            ix, iy = text
+
+            cv2.rectangle(img, (x, y), (x + ix, y - iy),
+                               (255, 255, 255), -1)
+            cv2.putText(img, subset.obj.text, (x, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, subset.obj.font_size,
+                        255, 1)
+
         elif subset.mode == Mode.CIRCLE:
             print(subset.imgcorners)
             print(subset.imgcorners[0, 0][0])

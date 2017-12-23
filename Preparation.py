@@ -90,13 +90,14 @@ def draw_circle(event, x, y, flags, param):
                             cv2.FONT_HERSHEY_SIMPLEX, font_size,
                             255, 1)
 
-                subsets.append(Subset(mode,
+                subsets.append(Subset(Mode.TEXT,
                                TextObj(RectangularObj((x, y),
                                                       (x + ix, y - iy),
                                                       (255, 255, 255),
                                                       -1),
                                        s[:-1], font_size, 255, 1),
-                               crop_image(imgList[0], x, y, x + ix, y - iy)))
+                               crop_image(imgList[0], x - 20, y + 20, x + ix + 20, y - iy - 20)))
+                cv2.imwrite("teste.png", crop_image(img, x - 20, y + 20, x + ix + 20, y - iy - 20))
                 break
         imgList.append(img.copy())
 
@@ -130,7 +131,7 @@ for filename in filenames:
         cv2.imshow('image', img)
         k = cv2.waitKey(1) & 0xFF
         if k == ord('m'):
-            if mode.value < len(Mode):
+            if mode.value < 3:
                 mode = Mode(mode.value + 1)
             else:
                 mode = Mode(1)

@@ -5,6 +5,7 @@ class Mode(Enum):
     ARROW = 1
     RECTANGLE = 2
     CIRCLE = 3
+    TEXT = 4
 
 
 class RectangularObj:

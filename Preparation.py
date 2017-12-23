@@ -96,8 +96,9 @@ def draw_circle(event, x, y, flags, param):
                                                       (255, 255, 255),
                                                       -1),
                                        s[:-1], font_size, 255, 1),
-                               crop_image(imgList[0], x - 20, y + 20, x + ix + 20, y - iy - 20)))
-                cv2.imwrite("teste.png", crop_image(img, x - 20, y + 20, x + ix + 20, y - iy - 20))
+                               crop_image(imgList[0],
+                                          x - 20, y + 20,
+                                          x + ix + 20, y - iy - 20)))
                 break
         imgList.append(img.copy())
 
@@ -148,14 +149,25 @@ for filename in filenames:
                 imgList.pop()
                 img = imgList[len(imgList) - 1]
                 subsets.pop()
-        elif k == ord('s'):
-            cv2.destroyAllWindows()
         elif k == 27:
             cv2.destroyAllWindows()
+            print('Preparation canceled for this image.')
+            break
+        elif k == ord('s'):
+            cv2.destroyAllWindows()
+            print('Preparation done. Saving...')
             newfilename = os.path.splitext(os.path.basename(filename))[0] + ".png"
             cv2.imwrite(os.path.join('prepared', newfilename), img)
-            images.append(Image(imgList[0], newfilename, subsets))
+            if(any(image.filename == newfilename for image in images)):
+                index = next((i for i, image in enumerate(images)
+                             if image.filename == newfilename), -1)
+                images[index] = Image(imgList[0], newfilename, subsets)
+            else:
+                images.append(Image(imgList[0], newfilename, subsets))
             break
 
-pickle.dump(images, open("imagesdb.obj", "wb"))
-print('Saving images to database!')
+if len(images) > 0:
+    pickle.dump(images, open("imagesdb.obj", "wb"))
+    print('Saved images to database!')
+else:
+    print('No images to save. Exiting...')
